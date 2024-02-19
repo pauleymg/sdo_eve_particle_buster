@@ -1,0 +1,67 @@
+---
+title: "FITSmanip"
+author: "Marshall Pauley"
+format: html
+---
+
+## Libraries
+
+Note: for the following code to run, you will need a few packages.
+
+```{r}
+#| label: load libraries
+
+library(FITSio) # tools for use with the .fit file format
+library(R.utils) # for compression removal
+```
+
+
+
+## Image Download
+
+#### URL
+
+Basic URL building requires finding the full name of a file by visual inspection of the website. To choose a file, go to [LASP's SDO-EVE data](https://lasp.colorado.edu/eve/data_access/eve_data/products/level0b/) and navigate to the file you want. This may require changing the values of `sensor`, `year`, and `folder` in the code.
+
+Will DEFINITELY require changing the value of `file`. Should be a .fit.gz extension
+
+```{r}
+#| label: basic URL building
+
+base_url <- "https://lasp.colorado.edu/eve/data_access/eve_data/products/level0b/"
+
+sensor <- "megs_a/"
+
+year <- "2012/"
+
+folder <- "002/"
+
+file <- "MA__L0B_0_2012002_131230_00_001_01.fit.gz"
+
+full_url <- base::paste0(base_url, sensor, year, folder, file)
+```
+
+
+
+#### Download and Decompress
+
+Before downloading, please for the love of all that is good, **check your working directory**. Run `getwd()` in console to make sure you save data where it's supposed to go.
+
+By default, `download.file()` puts the images in the folder where this script is located. 
+
+```{r}
+#| label: single image download
+
+dest_file <- "d2.fit.gz"
+
+download.file(url = full_url, destfile = dest_file)
+```
+
+```{r}
+#| label: remove compression
+
+# remove gz compression
+gunzip("./d2.fit.gz") 
+```
+
+You should now have an image file called "d2.fit" in the same folder as this script. Feel free to drop this into FITS Liberator to preview it.
